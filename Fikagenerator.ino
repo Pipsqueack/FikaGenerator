@@ -4,13 +4,14 @@
 #endif
 
 #define PIN        7 
-
 int NUMPIXELS = 24; 
 
 Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 
-#define DELAYVAL 50 // Time (in milliseconds) to pause between pixels
+//Här definaras hur snabbt ljuslamporna ska lysas upp
+#define DELAYVAL 50 
 
+//Setup funktion med huvudsyfte att sätta igång neopixeln samt att slumpa fram ett randomSeed som används i void loop.
 void setup() {
  
 #if defined(__AVR_ATtiny85__) && (F_CPU == 16000000)
@@ -21,22 +22,20 @@ void setup() {
   randomSeed(analogRead(0));
   pixels.begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
 }
+
+//Definerar hur länge ljusen kommer att rotera, i detta fall kommer 60-150 pixlar lysa upp.
 int a = 0;
 int timeCount = 0;
 int timeMax = random(60, 150);
 
-void loop() {
-  pixels.clear(); // Set all pixel colors to 'off'
 
-  // The first NeoPixel in a strand is #0, second is 1, all the way up
-  // to the count of pixels minus one.
+//Lyser upp pixlarna och roterar färger utefter vilket värde timeMax fick av random(). 
+void loop() {
+  pixels.clear(); 
   int colorVar[5] = {pixels.Color(60, 120, 180), pixels.Color(200, 20, 20), pixels.Color(20, 200, 20), pixels.Color(20, 20, 200), pixels.Color(180, 120, 60)};
 
 
-  for (int i = 0; i < NUMPIXELS; i++) { // For each pixel...
-
-    // pixels.Color() takes RGB values, from 0,0,0 up to 255,255,255
-    // Here we're using a moderately bright green color:
+  for (int i = 0; i < NUMPIXELS; i++) { 
 
     if (i == NUMPIXELS - 1) {
       a++;
@@ -46,11 +45,9 @@ void loop() {
     }
 
     pixels.setPixelColor(i, colorVar[a]);
+    pixels.show();
 
-
-    pixels.show();   // Send the updated pixel colors to the hardware.
-
-    delay(DELAYVAL); // Pause before next pass through loop
+    delay(DELAYVAL); 
 
     timeCount++;
 
